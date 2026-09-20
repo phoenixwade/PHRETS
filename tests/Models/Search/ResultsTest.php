@@ -8,7 +8,7 @@ class ResultsTest extends PHPUnit_Framework_TestCase
     /** @var Results */
     protected $rs;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rs = new Results;
 

@@ -7,7 +7,7 @@ class OneEightTest extends PHPUnit_Framework_TestCase {
     /** @var OneEight */
     protected $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new OneEight;
         $this->parser->parse("
