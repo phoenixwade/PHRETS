@@ -10,11 +10,15 @@
          processIsolation="false"
          stopOnFailure="false"
          bootstrap="tests/bootstrap.php"
+         defaultTestSuite="PHRETS Unit Test Suite"
 >
     <testsuites>
         <testsuite name="PHRETS Unit Test Suite">
             <directory>./tests/</directory>
             <exclude>./tests/Integration/</exclude>
+        </testsuite>
+        <testsuite name="PHRETS Recorded Integration Test Suite">
+            <directory>./tests/Integration/</directory>
         </testsuite>
     </testsuites>
 
