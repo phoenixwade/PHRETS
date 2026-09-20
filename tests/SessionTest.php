@@ -2,6 +2,11 @@
 
 use PHRETS\Configuration;
 use PHRETS\Session;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 
 class SessionTest extends PHPUnit_Framework_TestCase {
 
@@ -21,6 +26,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
      */
     public function it_detects_invalid_configurations()
     {
+        $this->expectException(\PHRETS\Exceptions\MissingConfiguration::class);
+
         $c = new Configuration;
         $c->setLoginUrl('http://www.reso.org/login');
 
@@ -106,6 +113,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
         $s = new Session($c);
         $this->assertInstanceOf('\GuzzleHttp\Cookie\CookieJarInterface', $s->getCookieJar());
+        $this->assertSame($s->getCookieJar(), $s->getDefaultOptions()['cookies']);
+        $this->assertArrayNotHasKey('curl', $s->getDefaultOptions());
     }
 
     /** @test **/
@@ -120,5 +129,34 @@ class SessionTest extends PHPUnit_Framework_TestCase {
         $s->setCookieJar($jar);
 
         $this->assertSame($jar, $s->getCookieJar());
+        $this->assertSame($jar, $s->getDefaultOptions()['cookies']);
+    }
+
+    /** @test **/
+    public function it_sends_login_cookies_on_follow_up_requests()
+    {
+        $history = [];
+        $mock = new MockHandler([
+            new Response(200, [
+                'Content-Type' => 'text/xml',
+                'Set-Cookie' => 'RETS-Session-ID=session-123; Path=/',
+            ], '<RETS ReplyCode="0" ReplyText="Success"><RETS-RESPONSE>Action=http://rets.example.test/action</RETS-RESPONSE></RETS>'),
+            new Response(200, ['Content-Type' => 'text/plain'], 'action response'),
+        ]);
+        $stack = HandlerStack::create($mock);
+        $stack->push(Middleware::history($history));
+        \PHRETS\Http\Client::set(new Client(['handler' => $stack]));
+
+        $config = (new Configuration)
+            ->setLoginUrl('http://rets.example.test/login')
+            ->setUsername('test-user')
+            ->setPassword('test-password');
+
+        $session = new Session($config);
+        $session->Login();
+
+        $this->assertCount(2, $history);
+        $this->assertSame('RETS-Session-ID=session-123', $history[1]['request']->getHeaderLine('Cookie'));
+        $this->assertSame('session-123', $session->getRetsSessionId());
     }
 }

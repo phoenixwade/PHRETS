@@ -11,7 +11,7 @@ class OneXTest extends PHPUnit_Framework_TestCase
     /** @var PHRETS\Models\Search\Results */
     protected $results;
 
-    public function setUp()
+    public function setUp(): void
     {
         $parser = new OneX;
 

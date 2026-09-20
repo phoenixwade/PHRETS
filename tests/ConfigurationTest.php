@@ -37,6 +37,8 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      **/
     public function it_complains_about_bad_config()
     {
+        $this->expectException(\PHRETS\Exceptions\InvalidConfiguration::class);
+
         Configuration::load();
     }
 
@@ -128,6 +130,8 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      **/
     public function it_doesnt_allow_bogus_auth_methods()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $c = new Configuration;
         $c->setHttpAuthenticationMethod('bogus');
     }

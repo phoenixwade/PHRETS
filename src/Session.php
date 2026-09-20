@@ -585,7 +585,10 @@ class Session
                 'Accept-Encoding' => 'gzip',
                 'Accept' => '*/*',
             ],
-            'curl' => [ CURLOPT_COOKIEFILE => tempnam('/tmp', 'phrets') ]
+            // Let Guzzle's cookie middleware manage the session cookie jar.
+            // Raw CURLOPT_COOKIEFILE handling conflicts with Guzzle 8 and also
+            // leaves an unnecessary temporary file behind for every request.
+            'cookies' => $this->cookie_jar,
         ];
 
         // disable following 'Location' header (redirects) automatically

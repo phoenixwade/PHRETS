@@ -91,6 +91,8 @@ class RETSVersionTest extends PHPUnit_Framework_TestCase {
      * **/
     public function it_fails_bad_versions()
     {
+        $this->expectException(\PHRETS\Exceptions\InvalidRETSVersion::class);
+
         $v = new RETSVersion;
         $v->setVersion('2.0');
     }

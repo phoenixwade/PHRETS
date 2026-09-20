@@ -19,6 +19,8 @@ class ResourceTest extends PHPUnit_Framework_TestCase {
      **/
     public function it_doesnt_like_bad_methods()
     {
+        $this->expectException(BadMethodCallException::class);
+
         $metadata = new Resource;
         $metadata->totallyBogus();
     }
