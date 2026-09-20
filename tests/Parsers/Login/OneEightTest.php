@@ -67,7 +67,7 @@ GetPayloadList=/GetPayloadList.asmx/GetPayloadList
     /** @test **/
     public function it_casts_details()
     {
-        $this->assertInternalType('bool', $this->parser->getDetails()['BROKERRECIPFLAG']);
-        $this->assertInternalType('int', $this->parser->getDetails()['SUL']);
+        $this->assertIsBool($this->parser->getDetails()['BROKERRECIPFLAG']);
+        $this->assertIsInt($this->parser->getDetails()['SUL']);
     }
 }

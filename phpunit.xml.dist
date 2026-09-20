@@ -12,8 +12,9 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="PHRETS Test Suite">
+        <testsuite name="PHRETS Unit Test Suite">
             <directory>./tests/</directory>
+            <exclude>./tests/Integration/</exclude>
         </testsuite>
     </testsuites>
 
